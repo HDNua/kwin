@@ -1,0 +1,252 @@
+
+
+Ubuntu 16.04에서 Docker 설치
+2016.12.22. 07:02
+URL 복사
+본문 기타 기능
+http://luckfellow.blog.me/220891940189
+Ubuntu Xenial 16.04 (LTS)에서 docker 설치하는 방법입니다.
+apt sources update
+
+1. sudo 또는 root 권한으로 로그인한다.
+
+2. 패키지 정보 업데이트 및 CA certificates 설치, APT가 https로 동작할 수 있도록 설치한다.
+$ sudo apt-get update 
+$ sudo apt-get install apt-transport-https ca-certificates
+
+3. GPG key 추가
+$ sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+
+4. /etc/apt/sources.list.d/docker.list 을 편집기로 열어서 (없다면 생성한다.) 모든 내용을 삭제한다.
+
+5. 아래 내용을 추가한다.
+deb https://apt.dockerproject.org/repo ubuntu-xenial main
+
+6. APT package index를 업데이트 한다.
+$ sudo apt-get update
+
+7.오래된 저장소를 삭제한다.
+$ sudo apt-get purge lxc-docker 
+
+8. 올바른 저장소에서 받은 지 검증한다.
+$ apt-cache policy docker-engine 
+
+9. linux-image-extra 패키지를 설치한다.
+$ sudo apt-get install linux-image-extra-$(uname -r)
+설치
+
+1. sudo 권한으로 로그인한다.
+
+2. APT package index를 업데이트 한다.
+$ sudo apt-get update 
+
+3. Docker를 설치한다.
+$ sudo apt-get install docker-engine 
+
+4. docker daemon을 시작한다.
+$ sudo service docker start 
+
+5. docker가 정상적으로 설치되었는지 확인한다.
+$ sudo docker run hello-world
+
+Docker group 생성
+
+1. sudo 권한으로 로그인한다.
+
+2. docker group을 생성한다.
+$ sudo groupadd docker 
+
+3. 사용자 계정을 docker group에 추가한다.
+$ sudo usermod -aG docker $USER
+
+4. 로그아웃 후 다시 로그인 한다.
+
+5. sudo 권한없이 docker container가 기동되는지 확인한다.
+$ docker run hello-world
+Enable UFW forwarding
+
+sudo 권한으로 로그인한다
+UFW가 설치되어 있고 enable되어 있는지 확인한다.
+$ sudo ufw status
+/etc/default/ufw파일을 열어서 DEFAULT_FORWARD_POLICY 설정한다.
+DEFAULT_FORWARD_POLICY="ACCEPT"
+새로운 설정을 반영하기 위해 UFW를 다시 로딩한다.
+$ sudo ufw reload
+Docker port를 오픈한다.
+$ sudo ufw allow 2375/tcp
+DNS server 설정
+
+sudo 권한으로 로그인한다
+/etc/default/docker 파일을 열어서 아래 설정을 추가합니다.
+DOCKER_OPTS="--dns 8.8.8.8"
+multiple DNS server 설정도 가능하므로 내부에서 사용하는 DNS Server가 있다면 아래와 같이 설정한다.
+--dns 8.8.8.8 --dns 192.168.1.1
+Docker daemon을 재시작한다.
+$ sudo service docker restart
+부팅 시 Docker 자동으로 실행
+
+부팅할 때 Docker daemon이 자동으로 실행되게 하려면 아래 명령을 실행한다.
+$ sudo systemctl enable docker
+Docker Upgrade
+
+$ sudo apt-get upgrade docker-engine
+
+삭제
+
+Docker package 삭제
+$ sudo apt-get purge docker-engine
+Docker package와 의존성있는 파일 모두 삭제
+$ sudo apt-get autoremove --purge docker-engine
+위 명령으로는 image, container, volume들과 사용자 설정 파일들이 삭제되지 않는다. 삭제를 원한다면 /var/lib/docker 디렉토리를 삭제한다.
+$ rm -rf /var/lib/docker
+
+출처 : http://blog.iamartin.com/ubuntu-16-04-docker-install/
+
+[출처] Ubuntu 16.04에서 Docker 설치|작성자 스파우터
+
+
+docker run -it gcr.io/tensorflow/tensorflow:latest-devel
+
+
+# ctrl-D if you're still in Docker and then:
+cd $HOME
+mkdir tf_files
+cd tf_files
+curl -O http://download.tensorflow.org/example_images/flower_photos.tgz
+tar xzf flower_photos.tgz
+
+
+# At your normal prompt, not inside Docker
+cd $HOME/tf_files/flower_photos
+rm -rf dandelion sunflowers tulips
+
+
+docker run -it -v $HOME/tf_files:/tf_files  gcr.io/tensorflow/tensorflow:latest-devel
+
+
+
+ls /tf_files/
+
+
+cd /tensorflow
+git pull
+
+
+python tensorflow/examples/image_retraining/retrain.py \
+--bottleneck_dir=/tf_files/bottlenecks \
+--how_many_training_steps 500 \
+--model_dir=/tf_files/inception \
+--output_graph=/tf_files/retrained_graph.pb \
+--output_labels=/tf_files/retrained_labels.txt \
+--image_dir /tf_files/flower_photos
+
+
+python retrain.py \
+--bottleneck_dir=./train/bottlenecks \
+--how_many_training_steps 500 \
+--model_dir=./train/inception \
+--output_graph=./train/retrained_graph.pb \
+--output_labels=./train/retrained_labels.txt \
+--image_dir ./train/flower_photos
+
+python retrain.py \
+--bottleneck_dir=/home/chj/PycharmProjects/image_classify/bottlenecks \
+--how_many_training_steps 500 \
+--model_dir=/home/chj/PycharmProjects/image_classify/inception \
+--output_graph=/home/chj/PycharmProjects/image_classify/retrained_graph.pb \
+--output_labels=/home/chj/PycharmProjects/image_classify/retrained_labels.txt \
+--image_dir /home/chj/PycharmProjects/image_classify/data
+
+
+import tensorflow as tf, sys
+
+# change this as you see fit
+image_path = sys.argv[1]
+
+# Read in the image_data
+image_data = tf.gfile.FastGFile(image_path, 'rb').read()
+
+# Loads label file, strips off carriage return
+label_lines = [line.rstrip() for line 
+                   in tf.gfile.GFile("tf_files/retrained_labels.txt")]
+
+# Unpersists graph from file
+with tf.gfile.FastGFile("tf_files/retrained_graph.pb", 'rb') as f:
+    graph_def = tf.GraphDef()
+    graph_def.ParseFromString(f.read())
+    _ = tf.import_graph_def(graph_def, name='')
+
+with tf.Session() as sess:
+    # Feed the image_data as input to the graph and get first prediction
+    softmax_tensor = sess.graph.get_tensor_by_name('final_result:0')
+    
+    predictions = sess.run(softmax_tensor, \
+             {'DecodeJpeg/contents:0': image_data})
+    
+    # Sort to show labels of first prediction in order of confidence
+    top_k = predictions[0].argsort()[-len(predictions[0]):][::-1]
+    
+    for node_id in top_k:
+        human_string = label_lines[node_id]
+        score = predictions[0][node_id]
+        print('%s (score = %.5f)' % (human_string, score))
+
+
+
+
+# ctrl-D to exit Docker and then:
+curl -L https://goo.gl/tx3dqg > $HOME/tf_files/label_image.py
+
+Restart your Docker image:
+
+docker run -it -v $HOME/tf_files:/tf_files  gcr.io/tensorflow/tensorflow:latest-devel 
+
+Now, run the Python file you created, first on a daisy:
+
+# In Docker
+python /tf_files/label_image.py /tf_files/flower_photos/daisy/21652746_cc379e0eea_m.jpg
+
+And then on a rose:
+
+# In Docker
+python /tf_files/label_image.py /tf_files/flower_photos/roses/2414954629_3708a1a04d.jpg 
+
+python /train/label_image.py /train/flower/rose_test.jpeg
+
+
+nvidia-docker run -it -p 8888:8888 gcr.io/tensorflow/tensorflow:latest-gpu
+
+
+
+cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr \ -D BUILD_NEW_PYTHON_SUPPORT=ON -D WITH_V4L=ON \ -D WITH_TBB=ON -D WITH_IPP=OFF \ -DOPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules  ../ 
+
+
+--bottleneck_dir=/home/chj/PycharmProjects/image_classify/bottlenecks
+\
+--how_many_training_steps
+500
+\
+--model_dir=/home/chj/PycharmProjects/image_classify/inception
+\
+--output_graph=/home/chj/PycharmProjects/image_classify/retrained_graph.pb
+\
+--output_labels=/home/chj/PycharmProjects/image_classify/retrained_labels.txt
+\
+--image_dir
+/home/chj/PycharmProjects/image_classify/data
+
+한도영, [04.01.17 23:19]
+git add --all
+git commit
+git push
+
+한도영, [04.01.17 23:19]
+이 정도가 끝이에요
+
+한도영, [04.01.17 23:19]
+그리고 지금
+
+희준 최, [04.01.17 23:19]
++git status!?
+
+

@@ -1,0 +1,1 @@
+/home/handy/work/kwin/log.txt

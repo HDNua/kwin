@@ -1,0 +1,8 @@
+# temporary files
+*.swp
+*.txt
+*.ps
+
+# screenshots
+screenshots/*
+*.png
