@@ -75,10 +75,9 @@ def output_labels():
     return "%s/train_labels.txt" %TRAIN_DIR
 
 
+"""
 BOTTLENECK_DIR = "C:/Users/idea_kwin/Desktop/work/kwin/train"
 MODEL_DIR = "C:/Users/idea_kwin/Desktop/work/kwin/train"
 OUTPUT_GRAPH = "C:/Users/idea_kwin/Desktop/work/kwin/train"
 OUTPUT_LABELS = "C:/Users/idea_kwin/Desktop/work/kwin/train"
-
-
-
+"""

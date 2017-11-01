@@ -1,6 +1,7 @@
-kwin v5.3.0.0
+kwin v5.3.1
 
-- Crawler 추가.
+- 사용되지 않는 정의 삭제.
+> BOTTLENECK_DIR, MODEL_DIR, OUTPUT_GRAPH, OUTPUT_LABELS
 
 
 end.

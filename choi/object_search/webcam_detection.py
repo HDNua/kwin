@@ -140,12 +140,12 @@ while video is not None and video.isOpened():
                     OUT_FONT_SIZE, (0, 0, 0))
 
     # 프레임 및 분석 결과를 출력합니다.
-    cv2.imshow('frame', frame)
+    cv2.imshow('webcam_detection', frame)
     cv2.imshow('board', board)
 
     # 프레임의 위치를 초기화합니다.
     if not moved:
-        cv2.moveWindow('frame', FRAME_X_ORIGIN, FRAME_Y_ORIGIN)
+        cv2.moveWindow('webcam_detection', FRAME_X_ORIGIN, FRAME_Y_ORIGIN)
         cv2.moveWindow('board', BOARD_X_ORIGIN, BOARD_Y_ORIGIN)
         moved = True
 

@@ -52,12 +52,17 @@ video = cv2.VideoCapture(test_video_path)
 frame_list = []
 frame_time = []
 
+#
+train_label_path = dataset.train_path("video_detection/train_labels.txt")
+train_graph_path = dataset.train_path("video_detection/train_graph.pb")
+
 # 레이블 파일을 가져오고(GFile) 모든 줄의 끝에 있는 캐리지 리턴을 제거합니다(rstrip).
-label_lines = [line.rstrip() for line
-               in tf.gfile.GFile("./train/train_labels.txt")]
+## label_lines = [line.rstrip() for line in tf.gfile.GFile("./train/train_labels.txt")]
+label_lines = [line.rstrip() for line in tf.gfile.GFile(train_label_path)]
 
 # 그래프 파일로부터 그래프를 생성합니다.
-with tf.gfile.FastGFile("./train/train_graph.pb", 'rb') as f:
+## with tf.gfile.FastGFile("./train/train_graph.pb", 'rb') as f:
+with tf.gfile.FastGFile(train_graph_path, 'rb') as f:
     graph_def = tf.GraphDef()
     graph_def.ParseFromString(f.read())
     _ = tf.import_graph_def(graph_def, name='')
@@ -151,7 +156,7 @@ cv2.destroyAllWindows()
 
 cnt = 0
 for frame in frame_list:
-    cv2.imshow('frame', frame)
+    cv2.imshow('video_detection', frame)
     print(obj + "나온 시간 : " + str(frame_time[cnt]))
     cnt = cnt+1
     if cv2.waitKey(1000) & 0xFF == ord('q'):
