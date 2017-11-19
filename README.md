@@ -13,7 +13,7 @@ KwangWoon INtelligence.
 # 소개 영상
 * Introduction - https://youtu.be/_6v8nGGueYk
 * 활용 영상 - https://youtu.be/YYEo6eG4EFk
-* Image Crawler - https://youtu.be/HURqeb_NxG0
-* Webcam Train - https://youtu.be/6JA9kcLEnXA
+* Image Crawler - https://youtu.be/yX0C9Z1soI4
+* Webcam Train - https://youtu.be/h7MRYmp056I
 * Webcam Detection - https://youtu.be/5OpDRtHiQVA
-* Video Detection - https://youtu.be/mvYLqerQB_0
+* Video Detection - https://youtu.be/Omcp2cQuKnc
